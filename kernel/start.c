@@ -14,53 +14,33 @@ __attribute__ ((aligned (16))) char stack0[4096 * NCPU];
 void
 start()
 {
-  // set M Previous Privilege mode to Supervisor, for mret.
-  unsigned long x = r_mstatus();
-  x &= ~MSTATUS_MPP_MASK;
-  x |= MSTATUS_MPP_S;
-  w_mstatus(x);
-
-  // set M Exception Program Counter to main, for mret.
-  // requires gcc -mcmodel=medany
-  w_mepc((uint64)main);
-
   // disable paging for now.
+  sfence_vma();
   w_satp(0);
+  sfence_vma();
 
-  // delegate all interrupts and exceptions to supervisor mode.
-  w_medeleg(0xffff);
-  w_mideleg(0xffff);
-  w_sie(r_sie() | SIE_SEIE | SIE_STIE | SIE_SSIE);
-
-  // configure Physical Memory Protection to give supervisor mode
-  // access to all of physical memory.
-  w_pmpaddr0(0x3fffffffffffffull);
-  w_pmpcfg0(0xf);
+  // disable interrupts and device interrupts.
+  w_sie(0);
+  w_sie(r_sstatus() & ~SSTATUS_SIE);
 
   // ask for clock interrupts.
   timerinit();
 
-  // keep each CPU's hartid in its tp register, for cpuid().
-  int id = r_mhartid();
-  w_tp(id);
+  // enable external interrupts.
+  w_sie(r_sie() | SIE_SEIE | SIE_STIE | SIE_SSIE);
 
-  // switch to supervisor mode and jump to main().
-  asm volatile("mret");
+  main();
 }
 
 // ask each hart to generate timer interrupts.
 void
 timerinit()
 {
-  // enable supervisor-mode timer interrupts.
-  w_mie(r_mie() | MIE_STIE);
-  
-  // enable the sstc extension (i.e. stimecmp).
-  w_menvcfg(r_menvcfg() | (1L << 63)); 
-  
-  // allow supervisor to use stimecmp and time.
-  w_mcounteren(r_mcounteren() | 2);
-  
-  // ask for the very first timer interrupt.
-  w_stimecmp(r_time() + 1000000);
+  // Setup SBI timer interrupt
+  asm volatile("li a7, 0x54494D45");
+  asm volatile("li a6, 0");
+  // pass r_time()+1000000 to a0
+  uint64 time = r_time() + 1000000;
+  asm volatile("mv a0, %0" : : "r" (time));
+  asm volatile("ecall");
 }
