@@ -24,17 +24,14 @@ kvmmake(void)
   kpgtbl = (pagetable_t) kalloc();
   memset(kpgtbl, 0, PGSIZE);
 
-  // uart registers
-  kvmmap(kpgtbl, UART0, UART0, PGSIZE, PTE_R | PTE_W);
-
-  // ramdisk
-  kvmmap(kpgtbl, RAMDISK, RAMDISK, PGSIZE*BSIZE, PTE_R | PTE_W);
-
   // PLIC
   kvmmap(kpgtbl, PLIC, PLIC, 0x4000000, PTE_R | PTE_W);
 
   // map kernel text executable and read-only.
   kvmmap(kpgtbl, KERNBASE, KERNBASE, (uint64)etext-KERNBASE, PTE_R | PTE_X);
+
+  // ramdisk read an
+  kvmmap(kpgtbl, RAMDISK, RAMDISK, PGSIZE*BSIZE, PTE_R | PTE_W);
 
   // map kernel data and the physical RAM we'll make use of.
   kvmmap(kpgtbl, (uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);

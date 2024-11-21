@@ -149,11 +149,7 @@ extern struct spinlock tickslock;
 void            usertrapret(void);
 
 // uart.c
-void            uartinit(void);
-void            uartintr(void);
-void            uartputc(int);
-void            uartputc_sync(int);
-int             uartgetc(void);
+void            sbi_console_putchar(int);
 
 // vm.c
 void            kvminit(void);

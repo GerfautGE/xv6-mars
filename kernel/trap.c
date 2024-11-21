@@ -192,9 +192,8 @@ devintr()
     // irq indicates which device interrupted.
     int irq = plic_claim();
 
-    if(irq == UART0_IRQ){
-      uartintr();
-    } else if(irq){
+
+    if(irq){
       printf("unexpected interrupt irq=%d\n", irq);
     }
 
