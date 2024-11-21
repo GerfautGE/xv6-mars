@@ -56,7 +56,15 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
+PLATFORM?= QEMU
+ifeq ($(PLATFORM), MARS)
+    KERNBASE = 0x40200000
+else
+    KERNBASE = 0x80200000
+endif
+
 CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb -gdwarf-2
+CFLAGS += -D$(PLATFORM)
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 # CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
@@ -81,7 +89,7 @@ endif
 LDFLAGS = -z max-page-size=4096
 
 $K/kernel: $(OBJS) $K/kernel.ld $U/initcode
-	$(LD) $(LDFLAGS) -T $K/kernel.ld -o $K/kernel $(OBJS)
+	$(LD) $(LDFLAGS) --defsym=KERNBASE=$(KERNBASE) -T $K/kernel.ld -o $K/kernel $(OBJS)
 	$(OBJDUMP) -S $K/kernel > $K/kernel.asm
 	$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
 
@@ -141,7 +149,7 @@ UPROGS=\
 	$U/_zombie\
 
 fs.img: mkfs/mkfs _README $(UPROGS)
-	mkfs/mkfs fs.img _README.xv6 $(UPROGS)
+	mkfs/mkfs fs.img _README $(UPROGS)
 
 -include kernel/*.d user/*.d
 

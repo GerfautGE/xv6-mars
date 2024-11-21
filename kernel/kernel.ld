@@ -4,10 +4,10 @@ ENTRY( _entry )
 SECTIONS
 {
   /*
-   * ensure that entry.S / _entry is at 0x40200000,
+   * ensure that entry.S / _entry is defined in memlayout.h,
    * where openSBI will jump
    */
-  . = 0x40200000;
+  . = KERNBASE;
 
   .text : {
     *(.text .text.*)
