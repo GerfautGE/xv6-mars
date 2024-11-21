@@ -68,7 +68,7 @@ main()
     printf("hart %d starting\n", boot_hartid);
     kinit();         // physical page allocator
     kvminit();       // create kernel page table
-    startothers(); // boot other CPUs
+    startothers();   // boot other CPUs
     kvminithart();   // turn on paging
     procinit();      // process table
     trapinit();      // trap vectors

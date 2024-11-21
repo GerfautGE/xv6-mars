@@ -6,23 +6,18 @@
 // 00001000 -- boot ROM, provided by qemu
 // 02000000 -- CLINT
 // 0C000000 -- PLIC
-// 10000000 -- uart0
 // 80000000 -- OpenSBI Firmware
-// 80200000 -- boot ROM jumps here in machine mode
+// 40200000 -- boot ROM jumps here in machine mode
 //             -kernel loads the kernel here
-// 89000000 -- ramdisk
+// 49000000 -- ramdisk
 
 // the kernel uses physical memory thus:
-// 80200000 -- entry.S, then kernel text and data
+// 40200000 -- entry.S, then kernel text and data
 // end -- start of kernel page allocation area
 // PHYSTOP -- end RAM used by the kernel
 
-// qemu puts UART registers here in physical memory.
-#define UART0 0x10000000L
-#define UART0_IRQ 10
-
 // ramdisk interface
-#define RAMDISK 0x89000000L
+#define RAMDISK 0x49000000L
 
 // qemu puts platform-level interrupt controller (PLIC) here.
 #define PLIC 0x0c000000L
@@ -34,8 +29,8 @@
 
 // the kernel expects there to be RAM
 // for use by the kernel and user pages
-// from physical address 0x80200000 to PHYSTOP.
-#define KERNBASE 0x80200000L
+// from physical address 0x40000000 to PHYSTOP.
+#define KERNBASE 0x40200000L
 #define PHYSTOP (KERNBASE + 128*1024*1024)
 
 // map the trampoline page to the highest address,
