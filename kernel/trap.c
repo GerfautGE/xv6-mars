@@ -173,7 +173,13 @@ clockintr()
   // ask for the next timer interrupt. this also clears
   // the interrupt request. 1000000 is about a tenth
   // of a second.
-  w_stimecmp(r_time() + 1000000);
+  // Setup SBI timer interrupt
+  asm volatile("li a7, 0x54494D45");
+  asm volatile("li a6, 0");
+  // pass r_time()+1000000 to a0
+  uint64 time = r_time() + 1000000;
+  asm volatile("mv a0, %0" : : "r" (time));
+  asm volatile("ecall");
 }
 
 // check if it's an external interrupt or software interrupt,
