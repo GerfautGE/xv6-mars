@@ -222,7 +222,7 @@ w_pmpaddr0(uint64 x)
 }
 
 // use riscv's sv39 page table scheme.
-#define SATP_SV39 (8L << 60)
+#define SATP_SV39 (0L << 60) // For now, as xv6 emulates sv39.
 
 #define MAKE_SATP(pagetable) (SATP_SV39 | (((uint64)pagetable) >> 12))
 
