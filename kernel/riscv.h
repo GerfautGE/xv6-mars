@@ -222,7 +222,7 @@ w_pmpaddr0(uint64 x)
 }
 
 // use riscv's sv39 page table scheme.
-#define SATP_SV39 (0L << 60) // For now, as xv6 emulates sv39.
+#define SATP_SV39 (8L << 60)
 
 #define MAKE_SATP(pagetable) (SATP_SV39 | (((uint64)pagetable) >> 12))
 
@@ -362,6 +362,9 @@ typedef uint64 *pagetable_t; // 512 PTEs
 #define PTE_W (1L << 2)
 #define PTE_X (1L << 3)
 #define PTE_U (1L << 4) // user can access
+#define PTE_G (1L << 5) // global
+#define PTE_A (1L << 6) // accessed
+#define PTE_D (1L << 7) // dirty
 
 // shift a physical address to the right place for a PTE.
 #define PA2PTE(pa) ((((uint64)pa) >> 12) << 10)
