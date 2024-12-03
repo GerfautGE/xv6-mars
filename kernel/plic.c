@@ -12,6 +12,7 @@ void
 plicinit(void)
 {
   // set desired IRQ priorities non-zero (otherwise disabled).
+  *(uint32*)(PLIC + UART0_IRQ*4) = 1;
 }
 
 void
@@ -20,6 +21,8 @@ plicinithart(void)
   int hart = cpuid();
 
   // set enable bits for this hart's S-mode
+  // for the uart and ramdisk
+  *(uint32*)PLIC_SENABLE(hart) = (1 << UART0_IRQ);
 
   // set this hart's S-mode priority threshold to 0.
   *(uint32*)PLIC_SPRIORITY(hart) = 0;

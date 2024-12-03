@@ -1,5 +1,5 @@
 //
-// Console input and output.
+// Console input and output, to the uart.
 // Reads are line at a time.
 // Implements special input characters:
 //   newline -- end of line
@@ -26,7 +26,7 @@
 #define C(x)  ((x)-'@')  // Control-x
 
 //
-// send one character to the sbi legacy console.
+// send one character to the uart.
 // called by printf(), and to echo input characters,
 // but not from write().
 //
@@ -35,15 +35,15 @@ consputc(int c)
 {
   if(c == BACKSPACE){
     // if the user typed backspace, overwrite with a space.
-    sbi_console_putchar('\b'); sbi_console_putchar(' '); sbi_console_putchar('\b');
+    uartputc_sync('\b'); uartputc_sync(' '); uartputc_sync('\b');
   } else {
-    sbi_console_putchar(c);
+    uartputc_sync(c);
   }
 }
 
 struct {
   struct spinlock lock;
-
+  
   // input
 #define INPUT_BUF_SIZE 128
   char buf[INPUT_BUF_SIZE];
@@ -64,7 +64,7 @@ consolewrite(int user_src, uint64 src, int n)
     char c;
     if(either_copyin(&c, user_src, src+i, 1) == -1)
       break;
-    sbi_console_putchar(c);
+    uartputc(c);
   }
 
   return i;
@@ -174,7 +174,7 @@ consoleintr(int c)
     }
     break;
   }
-
+  
   release(&cons.lock);
 }
 
@@ -182,6 +182,8 @@ void
 consoleinit(void)
 {
   initlock(&cons.lock, "cons");
+
+  uartinit();
 
   // connect read and write system calls
   // to consoleread and consolewrite.
