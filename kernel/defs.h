@@ -17,6 +17,11 @@ void            bwrite(struct buf*);
 void            bpin(struct buf*);
 void            bunpin(struct buf*);
 
+// buddy.c
+void           bd_init(void*,void*);
+void           bd_free(void*);
+void           *bd_malloc(uint64);
+
 // console.c
 void            consoleinit(void);
 void            consoleintr(int);
@@ -53,6 +58,19 @@ int             readi(struct inode*, int, uint64, uint, uint);
 void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, int, uint64, uint, uint);
 void            itrunc(struct inode*);
+
+struct list {
+  struct list *next;
+  struct list *prev;
+};
+
+// list.c
+void lst_init(struct list*);
+void lst_remove(struct list*);
+void lst_push(struct list*, void *);
+void *lst_pop(struct list*);
+void lst_print(struct list*);
+int lst_empty(struct list*);
 
 // ramdisk.c
 void            ramdiskinit(void);
