@@ -147,6 +147,7 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
+	$U/_primes\
 
 fs.img: mkfs/mkfs _README $(UPROGS)
 	mkfs/mkfs fs.img _README $(UPROGS)
