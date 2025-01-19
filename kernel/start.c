@@ -32,7 +32,8 @@ start()
   main();
 }
 
-// ask each hart to generate timer interrupts.
+// ask each hart to generate timer interrupts
+// TODO: this sould be in sbi.c
 void
 timerinit()
 {

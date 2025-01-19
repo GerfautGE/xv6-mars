@@ -198,5 +198,12 @@ void            plicinithart(void);
 int             plic_claim(void);
 void            plic_complete(int);
 
+// sbi.c
+struct sbiret sbi_ecall(int , int , uint64 , uint64 , uint64 , uint64 , uint64 , uint64 );
+void sbi_hart_start(uint64 , uint64 , uint64 );
+void startothers(int);
+uint64 sbi_reboot(void);
+
+
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))

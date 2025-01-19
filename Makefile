@@ -31,6 +31,7 @@ OBJS = \
   $K/ramdisk.o\
   $K/buddy.o \
   $K/list.o \
+  $K/sbi.o \
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
@@ -142,6 +143,7 @@ UPROGS=\
 	$U/_wc\
 	$U/_zombie\
 	$U/_primes\
+	$U/_reboot\
 
 fs.img: mkfs/mkfs _README $(UPROGS)
 	mkfs/mkfs fs.img _README $(UPROGS)
