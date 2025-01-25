@@ -24,7 +24,7 @@ compile the kernel and ramdisk image
 make PLATFORM=MARS
 make fs.img
 ```
-copy them to the mars SD card and then boot the mars.
+
 >[!TIP]
 >Connect to UART to get output:
 > | Pin | GPIO |
@@ -33,13 +33,25 @@ copy them to the mars SD card and then boot the mars.
 > | Tx  |     8|
 > | Rx  |    10|
 
+### SD Card
+Copy `kernel` and `fs.img` to the mars SD card and then boot the mars.
+
 Then once U-Boot prompt appears:
 ```bash
-load mmc 1 0xa0000000 kernel
+load mmc 1 ${loadaddr} kernel
 load mmc 1 0x49000000 fs.img
-bootelf 0xa0000000
+bootelf ${loadaddr}
 ```
-This will start the kernel.
+
+### TFTP server
+
+You can setup a DHCP and TFTP server and connect the Mars in the LAN.
+Then setup U-Boot:
+``` bash
+setenv bootcmd='dhcp; tftpboot ${loadaddr} kernel; tftpboot 0x49000000 fs.img; bootelf ${loadaddr};'
+saveenv
+```
+
 ## Debug
 
 You can debug the kernel with [GDB](https://sourceware.org/gdb/) via [OpenOCD](https://openocd.org) on a JTAG port I found on the board.
