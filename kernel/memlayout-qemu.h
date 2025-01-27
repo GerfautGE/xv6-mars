@@ -30,5 +30,8 @@
 // from physical address 0x40000000 to PHYSTOP.
 #define KERNBASE 0x80200000L
 
+#define UART0_OFFSET 1
+#define UART0_IRQ 10
+
 // ramdisk interface
 #define RAMDISK 0x89000000L

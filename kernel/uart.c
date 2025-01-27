@@ -13,7 +13,7 @@
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the
 // address of one of the registers.
-#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg)))
+#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg*UART0_OFFSET)))
 
 // the UART control registers.
 // some have different meanings for
@@ -55,14 +55,14 @@ uartinit(void)
   // disable interrupts.
   WriteReg(IER, 0x00);
 
-  // special mode to set baud rate.
+  // Set DLAB to 1 to set baud rate.
   WriteReg(LCR, LCR_BAUD_LATCH);
 
   // LSB for baud rate of 38.4K.
-  WriteReg(0, 0x03);
+  WriteReg(UART0_OFFSET*0, 0x03);
 
   // MSB for baud rate of 38.4K.
-  WriteReg(1, 0x00);
+  WriteReg(UART0_OFFSET*1, 0x00);
 
   // leave set-baud mode,
   // and set word length to 8 bits, no parity.

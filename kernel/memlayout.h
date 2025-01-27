@@ -4,18 +4,15 @@
 #if defined(QEMU)
 // QEMU virt
 #include "memlayout-qemu.h"
-#elif defined(MARS)
+#else
 // MilkV Mars
 #include "memlayout-mars.h"
-#else
-#include "memlayout-qemu.h"
 #endif
 
 // Common definitions for all memory layouts.
 
 // UART registers are at 0x10000000 on the Mars and Qemu virt platforms
 #define UART0 0x10000000
-#define UART0_IRQ 10
 
 #define PHYSTOP (KERNBASE + 128*1024*1024)
 

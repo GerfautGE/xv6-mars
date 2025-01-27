@@ -32,5 +32,11 @@
 // from physical address 0x40000000 to PHYSTOP.
 #define KERNBASE 0x40200000L
 
+//https://lupyuen.codeberg.page/articles/privilege.html#wait-forever-in-uart-transmit
+#define UART0_OFFSET 4
+
+// https://lupyuen.org/articles/plic.html
+#define UART0_IRQ 27
+
 // ramdisk interface
 #define RAMDISK 0x49000000L
