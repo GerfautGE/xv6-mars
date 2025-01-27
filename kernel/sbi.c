@@ -63,3 +63,8 @@ inline sbi_reboot(void)
   sbi_ecall(0x53525354, 0x0, reset_type, reset_reason, 0, 0, 0, 0);
   return 0;
 }
+
+inline void sbi_set_timer(uint64 delay){
+  uint64 time = r_time() + delay;
+  sbi_ecall(0x54494D45, 0x0, time, 0, 0, 0, 0, 0);
+}

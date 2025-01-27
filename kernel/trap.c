@@ -174,12 +174,7 @@ clockintr()
   // the interrupt request. 1000000 is about a tenth
   // of a second.
   // Setup SBI timer interrupt
-  asm volatile("li a7, 0x54494D45");
-  asm volatile("li a6, 0");
-  // pass r_time()+1000000 to a0
-  uint64 time = r_time() + 1000000;
-  asm volatile("mv a0, %0" : : "r" (time));
-  asm volatile("ecall");
+  sbi_set_timer(1000000);
 }
 
 // check if it's an external interrupt or software interrupt,
