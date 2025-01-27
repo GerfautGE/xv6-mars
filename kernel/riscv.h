@@ -288,14 +288,14 @@ r_time()
 static inline void
 intr_on()
 {
-  w_sstatus(r_sstatus() | SSTATUS_SIE);
+  w_sie(r_sstatus() | SSTATUS_SIE);
 }
 
 // disable device interrupts
 static inline void
 intr_off()
 {
-  w_sstatus(r_sstatus() & ~SSTATUS_SIE);
+  w_sie(r_sstatus() & ~SSTATUS_SIE);
 }
 
 // are device interrupts enabled?
