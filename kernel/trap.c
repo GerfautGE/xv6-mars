@@ -187,6 +187,13 @@ clockintr()
 // returns 2 if timer interrupt,
 // 1 if other device,
 // 0 if not recognized.
+
+enum {
+  TIMER_INT = 2,
+  DEVICE_INT = 1,
+  NOT_RECOGNIZED = 0
+};
+
 int
 devintr()
 {
@@ -210,12 +217,12 @@ devintr()
     if(irq)
       plic_complete(irq);
 
-    return 1;
+    return DEVICE_INT;
   } else if(scause == 0x8000000000000005L){
     // timer interrupt.
     clockintr();
-    return 2;
+    return TIMER_INT;
   } else {
-    return 0;
+    return NOT_RECOGNIZED;
   }
 }

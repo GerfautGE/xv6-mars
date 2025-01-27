@@ -139,20 +139,20 @@ uartstart()
       ReadReg(ISR);
       return;
     }
-    
+
     if((ReadReg(LSR) & LSR_TX_IDLE) == 0){
       // the UART transmit holding register is full,
       // so we cannot give it another byte.
       // it will interrupt when it's ready for a new byte.
       return;
     }
-    
+
     int c = uart_tx_buf[uart_tx_r % UART_TX_BUF_SIZE];
     uart_tx_r += 1;
-    
+
     // maybe uartputc() is waiting for space in the buffer.
     wakeup(&uart_tx_r);
-    
+
     WriteReg(THR, c);
   }
 }
