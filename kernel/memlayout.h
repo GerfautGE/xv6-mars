@@ -8,8 +8,6 @@
 #define UART0_OFFSET 4
 // https://lupyuen.org/articles/plic.html
 #define UART0_IRQ 27
-// ramdisk interface
-#define RAMDISK 0x49000000L
 
 #endif
 #ifdef CONFIG_QEMU
@@ -17,12 +15,12 @@
 #define KERNBASE 0x80200000L
 #define UART0_OFFSET 1
 #define UART0_IRQ 10
-#define RAMDISK 0x89000000L
 
 #endif
 
 
 // Common definitions for all memory layouts.
+#define RAMDISK KERNBASE + 0x8E00000
 
 // qemu puts platform-level interrupt controller (PLIC) here.
 #define PLIC 0x0c000000L
