@@ -10,7 +10,7 @@ An attempt to port [xv6-riscv](https://github.com/mit-pdos/xv6-riscv) to the [Mi
 **xv6-mars** supports:
 
 - SBI timers
-- SBI HSM to start 
+- SBI HSM to start
 - a ramdisk
 
 
@@ -18,10 +18,19 @@ An attempt to port [xv6-riscv](https://github.com/mit-pdos/xv6-riscv) to the [Mi
 >UART is still not supported in the kernel. SBI console will print the output but **no input is supported for now**.
 
 ## Run
+
+### Configuration
+
+You need to configure the kernel to run on the Mars board. Edit `config.mk`:
+
+```makefile
+PLATFORM = mars
+```
+### Build
 To get xv6 starting on the board, you need to load manually everything.
 compile the kernel and ramdisk image
 ```bash
-make PLATFORM=MARS
+make
 make fs.img
 ```
 
@@ -33,7 +42,8 @@ make fs.img
 > | Tx  |     8|
 > | Rx  |    10|
 
-### SD Card
+### Load
+#### SD card
 Copy `kernel` and `fs.img` to the mars SD card and then boot the mars.
 
 Then once U-Boot prompt appears:
@@ -43,7 +53,7 @@ load mmc 1 0x49000000 fs.img
 bootelf ${loadaddr}
 ```
 
-### TFTP server
+#### TFTP server
 
 You can setup a DHCP and TFTP server and connect the Mars in the LAN.
 Then setup U-Boot:
