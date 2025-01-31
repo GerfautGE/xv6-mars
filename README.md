@@ -12,10 +12,8 @@ An attempt to port [xv6-riscv](https://github.com/mit-pdos/xv6-riscv) to the [Mi
 - SBI timers
 - SBI HSM to start
 - a ramdisk
+- UART
 
-
->[!WARNING]
->UART is still not supported in the kernel. SBI console will print the output but **no input is supported for now**.
 
 ## Run
 
