@@ -7,14 +7,19 @@
 //https://lupyuen.codeberg.page/articles/privilege.html#wait-forever-in-uart-transmit
 #define UART0_OFFSET 4
 // https://lupyuen.org/articles/plic.html
-#define UART0_IRQ 27
+#define UART0_IRQ 32
+#define PLIC_SENABLE(hart) (PLIC + 0x2100 + (hart)*0x100)
+#define PLIC_SPRIORITY(hart) (PLIC + 0x202000 + (hart)*0x2000)
+#define PLIC_SCLAIM(hart) (PLIC + 0x202004 + (hart)*0x2000)
 
-#endif
-#ifdef CONFIG_QEMU
+#else
 
 #define KERNBASE 0x80200000L
 #define UART0_OFFSET 1
 #define UART0_IRQ 10
+#define PLIC_SENABLE(hart) (PLIC + 0x2080 + (hart)*0x100)
+#define PLIC_SPRIORITY(hart) (PLIC + 0x201000 + (hart)*0x2000)
+#define PLIC_SCLAIM(hart) (PLIC + 0x201004 + (hart)*0x2000)
 
 #endif
 
@@ -26,9 +31,7 @@
 #define PLIC 0x0c000000L
 #define PLIC_PRIORITY (PLIC + 0x0)
 #define PLIC_PENDING (PLIC + 0x1000)
-#define PLIC_SENABLE(hart) (PLIC + 0x2080 + (hart)*0x100)
-#define PLIC_SPRIORITY(hart) (PLIC + 0x201000 + (hart)*0x2000)
-#define PLIC_SCLAIM(hart) (PLIC + 0x201004 + (hart)*0x2000)
+
 
 // UART registers are at 0x10000000 on the Mars and Qemu virt platforms
 #define UART0 0x10000000

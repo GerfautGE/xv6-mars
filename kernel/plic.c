@@ -21,10 +21,14 @@ plicinithart(void)
   int hart = cpuid();
 
   // set enable bits for this hart's S-mode
-  *(uint32*)PLIC_SENABLE(hart) = (1 << UART0_IRQ);
+  #ifdef CONFIG_MARS
+  *(plic_t*)PLIC_SENABLE(hart) = (1ULL << UART0_IRQ);
+   #else
+  *(plic_t*)PLIC_SENABLE(hart) = (1 << UART0_IRQ);
+  #endif
 
   // set this hart's S-mode priority threshold to 0.
-  *(uint32*)PLIC_SPRIORITY(hart) = 0;
+  *(plic_t*)PLIC_SPRIORITY(hart) = 0;
 }
 
 // ask the PLIC what interrupt we should serve.
@@ -32,7 +36,7 @@ int
 plic_claim(void)
 {
   int hart = cpuid();
-  int irq = *(uint32*)PLIC_SCLAIM(hart);
+  int irq = *(plic_t*)PLIC_SCLAIM(hart);
   return irq;
 }
 
@@ -41,5 +45,5 @@ void
 plic_complete(int irq)
 {
   int hart = cpuid();
-  *(uint32*)PLIC_SCLAIM(hart) = irq;
+  *(plic_t*)PLIC_SCLAIM(hart) = irq;
 }
