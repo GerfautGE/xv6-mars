@@ -6,7 +6,7 @@
 
 # Target platform selection
 # Options: qemu, mars
-PLATFORM = qemu
+PLATFORM = mars
 
 # Platform-specific compilation options
 ifeq ($(PLATFORM),mars)
