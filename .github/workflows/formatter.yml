@@ -1,0 +1,20 @@
+name: Check K&R Formatting
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format
+
+      - name: Check formatting
+        run: |
+          find . -name "*.c" -o -name "*.h" | xargs clang-format --style=K&R --dry-run --Werror
