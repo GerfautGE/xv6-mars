@@ -59,10 +59,10 @@ uartinit(void)
   WriteReg(LCR, LCR_BAUD_LATCH);
 
   // LSB for baud rate of 38.4K.
-  WriteReg(UART0_OFFSET*0, 0x03);
+  WriteReg(0, 0x03);
 
   // MSB for baud rate of 38.4K.
-  WriteReg(UART0_OFFSET*1, 0x00);
+  WriteReg(1, 0x00);
 
   // leave set-baud mode,
   // and set word length to 8 bits, no parity.
