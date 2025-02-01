@@ -1,55 +1,48 @@
 // Sleeping locks
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "proc.h"
 #include "sleeplock.h"
+#include "defs.h"
+#include "memlayout.h"
+#include "param.h"
+#include "proc.h"
+#include "riscv.h"
+#include "spinlock.h"
+#include "types.h"
 
-void
-initsleeplock(struct sleeplock *lk, char *name)
+void initsleeplock(struct sleeplock* lk, char* name)
 {
-  initlock(&lk->lk, "sleep lock");
-  lk->name = name;
-  lk->locked = 0;
-  lk->pid = 0;
+    initlock(&lk->lk, "sleep lock");
+    lk->name = name;
+    lk->locked = 0;
+    lk->pid = 0;
 }
 
-void
-acquiresleep(struct sleeplock *lk)
+void acquiresleep(struct sleeplock* lk)
 {
-  acquire(&lk->lk);
-  while (lk->locked) {
-    sleep(lk, &lk->lk);
-  }
-  lk->locked = 1;
-  lk->pid = myproc()->pid;
-  release(&lk->lk);
+    acquire(&lk->lk);
+    while (lk->locked) {
+        sleep(lk, &lk->lk);
+    }
+    lk->locked = 1;
+    lk->pid = myproc()->pid;
+    release(&lk->lk);
 }
 
-void
-releasesleep(struct sleeplock *lk)
+void releasesleep(struct sleeplock* lk)
 {
-  acquire(&lk->lk);
-  lk->locked = 0;
-  lk->pid = 0;
-  wakeup(lk);
-  release(&lk->lk);
+    acquire(&lk->lk);
+    lk->locked = 0;
+    lk->pid = 0;
+    wakeup(lk);
+    release(&lk->lk);
 }
 
-int
-holdingsleep(struct sleeplock *lk)
+int holdingsleep(struct sleeplock* lk)
 {
-  int r;
-  
-  acquire(&lk->lk);
-  r = lk->locked && (lk->pid == myproc()->pid);
-  release(&lk->lk);
-  return r;
+    int r;
+
+    acquire(&lk->lk);
+    r = lk->locked && (lk->pid == myproc()->pid);
+    release(&lk->lk);
+    return r;
 }
-
-
-

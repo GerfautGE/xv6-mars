@@ -1,23 +1,22 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
 #include "buf.h"
+#include "defs.h"
+#include "fs.h"
+#include "memlayout.h"
+#include "param.h"
+#include "riscv.h"
+#include "sleeplock.h"
+#include "spinlock.h"
+#include "types.h"
 
 struct disk {
-  char free[8];  // is a descriptor free?
-  uint16 used_idx; // we've looked this far in used[2..NUM].
-  struct spinlock rdisk_lock;
+    char free[8]; // is a descriptor free?
+    uint16 used_idx; // we've looked this far in used[2..NUM].
+    struct spinlock rdisk_lock;
 } disk;
 
-void
-ramdiskinit(void)
+void ramdiskinit(void)
 {
-  initlock(&disk.rdisk_lock, "ramdisk_lock");
+    initlock(&disk.rdisk_lock, "ramdisk_lock");
 };
 
 /**
@@ -25,19 +24,18 @@ ramdiskinit(void)
  * @param buf The buffer to read/write (see kernel/buf.h)
  * @param write 1 if write, 0 if read
  */
-void
-ramdiskrw(struct buf *buf, int write)
+void ramdiskrw(struct buf* buf, int write)
 {
-  acquire(&disk.rdisk_lock);
-  // get the data of size BSIZE from the ramdisk at
-  // RAMDISK + BSIZE * buf->blockno
-  uint64 addr = RAMDISK + BSIZE * buf->blockno;
-  if (write) {
-    // write the data to the ramdisk
-    memmove((uchar *)addr, buf->data, BSIZE);
-  } else {
-    // read the data from the ramdisk
-    memmove(buf->data, (uchar *)addr, BSIZE);
-  }
-  release(&disk.rdisk_lock);
+    acquire(&disk.rdisk_lock);
+    // get the data of size BSIZE from the ramdisk at
+    // RAMDISK + BSIZE * buf->blockno
+    uint64 addr = RAMDISK + BSIZE * buf->blockno;
+    if (write) {
+        // write the data to the ramdisk
+        memmove((uchar*)addr, buf->data, BSIZE);
+    } else {
+        // read the data from the ramdisk
+        memmove(buf->data, (uchar*)addr, BSIZE);
+    }
+    release(&disk.rdisk_lock);
 };
