@@ -36,6 +36,10 @@ consputc(int c)
   if(c == BACKSPACE){
     // if the user typed backspace, overwrite with a space.
     uartputc_sync('\b'); uartputc_sync(' '); uartputc_sync('\b');
+  } else if(c == '\n') {
+    // for newline, send both CR and LF
+    uartputc_sync('\r');
+    uartputc_sync('\n');
   } else {
     uartputc_sync(c);
   }
@@ -64,6 +68,9 @@ consolewrite(int user_src, uint64 src, int n)
     char c;
     if(either_copyin(&c, user_src, src+i, 1) == -1)
       break;
+    if(c == '\n') {
+      uartputc('\r');
+    }
     uartputc(c);
   }
 
@@ -157,10 +164,14 @@ consoleintr(int c)
     break;
   default:
     if(c != 0 && cons.e-cons.r < INPUT_BUF_SIZE){
-      c = (c == '\r') ? '\n' : c;
-
-      // echo back to the user.
-      consputc(c);
+      if(c == '\r' || c == '\n') {
+        c = '\n';
+        consputc('\r');
+        consputc('\n');
+      } else {
+        // echo back to the user.
+        consputc(c);
+      }
 
       // store for consumption by consoleread().
       cons.buf[cons.e++ % INPUT_BUF_SIZE] = c;
