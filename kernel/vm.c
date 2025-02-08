@@ -5,6 +5,7 @@
 #include "riscv.h"
 #include "defs.h"
 #include "fs.h"
+#include "thermal.h"
 
 /*
  * the kernel's page table.
@@ -26,6 +27,11 @@ kvmmake(void)
 
   // uart registers
   kvmmap(kpgtbl, UART0, UART0, PGSIZE, PTE_R | PTE_W);
+
+  #ifdef CONFIG_MARS
+  // thermal sensor (64KB)
+  kvmmap(kpgtbl, THERMAL, THERMAL, 0x10000, PTE_R | PTE_W);
+  #endif
 
   // ramdisk
   kvmmap(kpgtbl, RAMDISK, RAMDISK, PGSIZE*BSIZE, PTE_R | PTE_W);
