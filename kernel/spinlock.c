@@ -40,7 +40,6 @@ acquire(struct spinlock *lk)
   while(__sync_lock_test_and_set(&lk->locked, 1) != 0) {
     nbtries++;
     if(nbtries > MAXTRIES && !warned){
-      procdump();
       warned = 1;
     }
      __sync_fetch_and_add(&lk->nts, 1);
