@@ -148,6 +148,9 @@ consoleintr(int c)
   case C('P'):  // Print process list.
     procdump();
     break;
+  case C('Q'):  // Print priority list
+    priodump();
+    break;
   case C('U'):  // Kill line.
     while(cons.e != cons.w &&
           cons.buf[(cons.e-1) % INPUT_BUF_SIZE] != '\n'){

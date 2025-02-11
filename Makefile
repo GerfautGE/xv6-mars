@@ -140,6 +140,7 @@ UPROGS=\
 	$U/_zombie\
 	$U/_primes\
 	$U/_reboot\
+	$U/_nice \
 
 fs.img: mkfs/mkfs _README $(UPROGS)
 	mkfs/mkfs fs.img _README $(UPROGS)
