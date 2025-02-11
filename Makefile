@@ -1,5 +1,6 @@
 # load the kernel configuration
 include config.mk
+include opts.mk
 
 K=kernel
 U=user

@@ -8,17 +8,8 @@
 # Options: qemu, mars
 PLATFORM = mars
 
-# Platform-specific compilation options
-ifeq ($(PLATFORM),mars)
-    CFLAGS += -DCONFIG_MARS
-    LDFLAGS += --defsym=KERNBASE=0x40200000
-else ifeq ($(PLATFORM),qemu)
-    CFLAGS += -DCONFIG_QEMU
-    LDFLAGS += --defsym=KERNBASE=0x80200000
-else
-    $(error "PLATFORM must be 'qemu' or 'mars'")
-endif
-
+# Build profile
+# Options: debug, release
 
 # Export the configuration variables for the Makefile
-export PLATFORM CFLAGS LDFLAGS
+export PLATFORM PROFILE
