@@ -10,6 +10,7 @@ PLATFORM = mars
 
 # Build profile
 # Options: debug, release
+PROFILE = debug
 
 # Export the configuration variables for the Makefile
 export PLATFORM PROFILE
