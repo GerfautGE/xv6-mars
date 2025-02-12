@@ -14,6 +14,7 @@ An attempt to port [xv6-riscv](https://github.com/mit-pdos/xv6-riscv) to the [Mi
 - Ramdisk
 - UART
 - Buddy allocator
+- MultiLevel Queue Scheduling
 
 ## Run
 
