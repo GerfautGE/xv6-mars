@@ -31,7 +31,9 @@ main()
     iinit();         // inode table
     fileinit();      // file table
     ramdiskinit();   // ramdisk initialisation
+    #ifdef CONFIG_MARS
     thermal_init();  // thermal sensor initialisation
+    #endif
     userinit();      // first user process
     __sync_synchronize();
     started = 1;
