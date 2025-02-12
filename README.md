@@ -11,9 +11,9 @@ An attempt to port [xv6-riscv](https://github.com/mit-pdos/xv6-riscv) to the [Mi
 
 - SBI timers
 - SBI HSM to start
-- a ramdisk
+- Ramdisk
 - UART
-
+- Buddy allocator
 
 ## Run
 

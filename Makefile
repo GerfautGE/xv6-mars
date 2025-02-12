@@ -1,5 +1,6 @@
 # load the kernel configuration
 include config.mk
+include opts.mk
 
 K=kernel
 U=user
@@ -63,7 +64,7 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
-CFLAGS += -Wall -Werror -O -fno-omit-frame-pointer -ggdb
+CFLAGS += -Wall -Werror -fno-omit-frame-pointer
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
@@ -141,6 +142,7 @@ UPROGS=\
 	$U/_zombie\
 	$U/_primes\
 	$U/_reboot\
+	$U/_nice \
 
 fs.img: mkfs/mkfs _README $(UPROGS)
 	mkfs/mkfs fs.img _README $(UPROGS)
