@@ -91,6 +91,9 @@ uservec:
         # install the kernel page table.
         csrw satp, t1
 
+        # flush the instruction cache now that the code changed by updating the page tabe
+        fence.i
+
         # flush now-stale user entries from the TLB.
         sfence.vma zero, zero
 
@@ -107,6 +110,10 @@ userret:
         # switch to the user page table.
         sfence.vma zero, zero
         csrw satp, a0
+
+        # flush the instruction cache now that the code changed by updating the page tabe
+        fence.i
+
         sfence.vma zero, zero
 
         li a0, TRAPFRAME
