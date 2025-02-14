@@ -66,6 +66,11 @@ kvminithart()
 
   w_satp(MAKE_SATP(kernel_pagetable));
 
+  // Depending on the cpu implementation a memory barrier might
+  // not affect the instruction caches, so after loading executable
+  // code an instruction memory barrier is needed.
+  instruction_memory_barrier();
+
   // flush stale entries from the TLB.
   sfence_vma();
 }
