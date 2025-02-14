@@ -66,10 +66,12 @@ OBJDUMP = $(TOOLPREFIX)objdump
 
 CFLAGS += -Wall -Werror -fno-omit-frame-pointer
 CFLAGS += -MD
-CFLAGS += -mcmodel=medany
+CFLAGS += -mcmodel=medany -march=rv64g
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
 CFLAGS += -I.
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
+
+ASFLAGS += -march=rv64g
 
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
@@ -87,7 +89,7 @@ $K/kernel: $(OBJS) $K/kernel.ld $U/initcode
 	$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
 
 $U/initcode: $U/initcode.S
-	$(CC) $(CFLAGS) -march=rv64g -nostdinc -I. -Ikernel -c $U/initcode.S -o $U/initcode.o
+	$(CC) $(CFLAGS) -nostdinc -I. -Ikernel -c $U/initcode.S -o $U/initcode.o
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0 -o $U/initcode.out $U/initcode.o
 	$(OBJCOPY) -S -O binary $U/initcode.out $U/initcode
 	$(OBJDUMP) -S $U/initcode.o > $U/initcode.asm
