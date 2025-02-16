@@ -1,13 +1,12 @@
 #ifndef THERMAL_H
 #define THERMAL_H
 
-#define SYSCLK 0x13030000
-
-#define THERMAL 0X120E0000
-#define THERMAL_IRQ 81
+#define SYSCRG 0x13020000
 
 #define JH7110_SYSCLK_TEMP_APB			129 // Bus
 #define JH7110_SYSCLK_TEMP_CORE			130 // Sense
+
+#define THERMAL 0X120E0000
 
 #define SFCTEMP_RSTN (1 << 0) // 0: reset,    1: de-assert
 #define SFCTEMP_PD   (1 << 1) // 0: power up, 1: power down

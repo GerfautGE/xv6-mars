@@ -32,8 +32,8 @@ kvmmake(void)
   // thermal sensor (64KB)
   kvmmap(kpgtbl, THERMAL, THERMAL, 0x10000, PTE_R | PTE_W);
 
-  // syscon (64KB)
-  kvmmap(kpgtbl, SYSCLK, SYSCLK, 0x10000, PTE_R | PTE_W);
+  // syscrg (64KB)
+  kvmmap(kpgtbl, SYSCRG, SYSCRG, 0x10000, PTE_R | PTE_W);
   #endif
 
   // ramdisk
