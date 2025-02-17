@@ -5,7 +5,7 @@
 #include "riscv.h"
 #include "defs.h"
 #include "fs.h"
-#include "thermal.h"
+#include "syscrg.h"
 
 /*
  * the kernel's page table.

@@ -1,13 +1,6 @@
 #ifndef THERMAL_H
 #define THERMAL_H
 
-#define SYSCRG 0x13020000
-
-#define JH7110_SYSCLK_TEMP_APB			129 // Bus
-#define JH7110_SYSCLK_TEMP_CORE			130 // Sense
-
-#define THERMAL 0X120E0000
-
 #define SFCTEMP_RSTN (1 << 0) // 0: reset,    1: de-assert
 #define SFCTEMP_PD   (1 << 1) // 0: power up, 1: power down
 #define SFCTEMP_RUN  (1 << 2) // 0: disable,  1: enable
@@ -20,5 +13,6 @@
 #define SFCTEMP_K1000	81100L
 
 void thermal_init();
+int thermalread();
 
 #endif // THERMAL_H
