@@ -64,10 +64,11 @@ AS = $(TOOLPREFIX)gas
 LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
+STRIP = $(TOOLPREFIX)strip
 
-CFLAGS += -Wall -Werror -fno-omit-frame-pointer
+CFLAGS += -Wall -Werror
 CFLAGS += -MD
-CFLAGS += -mcmodel=medany -march=rv64gc
+CFLAGS += -mcmodel=medany -fno-plt
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
 CFLAGS += -I.
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
@@ -86,8 +87,12 @@ LDFLAGS += -z max-page-size=4096
 
 $K/kernel: $(OBJS) $K/kernel.ld $U/initcode
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o $K/kernel $(OBJS)
-	$(OBJDUMP) -S $K/kernel > $K/kernel.asm
-	$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
+ifeq ($(PROFILE), debug)
+		$(OBJDUMP) -S $K/kernel > $K/kernel.asm
+		$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
+else ifeq ($(PROFILE), release)
+		$(STRIP) --strip-all $K/kernel
+endif
 
 $U/initcode: $U/initcode.S
 	$(CC) $(CFLAGS) -nostdinc -I. -Ikernel -c $U/initcode.S -o $U/initcode.o
