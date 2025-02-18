@@ -67,12 +67,12 @@ OBJDUMP = $(TOOLPREFIX)objdump
 
 CFLAGS += -Wall -Werror -fno-omit-frame-pointer
 CFLAGS += -MD
-CFLAGS += -mcmodel=medany -march=rv64g
+CFLAGS += -mcmodel=medany -march=rv64gc
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
 CFLAGS += -I.
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
-ASFLAGS += -march=rv64g
+ASFLAGS += -march=rv64gc
 
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)

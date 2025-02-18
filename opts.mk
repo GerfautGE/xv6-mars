@@ -13,7 +13,7 @@ endif
 ifeq ($(PROFILE),debug)
     CFLAGS += -O -ggdb
 else ifeq ($(PROFILE),release)
-    CFLAGS += -O3
+    CFLAGS += -O2
 else
     $(error "PROFILE must be 'debug' or 'release'")
 endif
