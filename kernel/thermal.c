@@ -1,4 +1,4 @@
-#ifdef CONFIG_MARS
+#ifdef CONFIG_JH7110
 
 #include "memlayout.h"
 #include "thermal.h"

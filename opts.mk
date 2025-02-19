@@ -1,22 +1,22 @@
 # Platform-specific compilation options
-ifeq ($(PLATFORM),mars)
-    CFLAGS = -DCONFIG_MARS -march=rv64gc_zba_zbb -mcpu=sifive-u74 -mtune=sifive-7-series
+ifeq ($(PLATFORM),JH7110)
+    CFLAGS = -DCONFIG_JH7110 -march=rv64gc_zba_zbb -mcpu=sifive-u74 -mtune=sifive-7-series
     LDFLAGS += --defsym=KERNBASE=0x40200000
-else ifeq ($(PLATFORM),qemu)
+else ifeq ($(PLATFORM),QEMU)
     CFLAGS = -DCONFIG_QEMU -march=rv64gc
     LDFLAGS += --defsym=KERNBASE=0x80200000
 else
-    $(error "PLATFORM must be 'qemu' or 'mars'")
+    $(error "PLATFORM must be 'QEMU' or 'JH7110'")
 endif
 
 # Build profile-specific compilation options
-ifeq ($(PROFILE),debug)
+ifeq ($(PROFILE),DEBUG)
     CFLAGS += -O -ggdb -fno-omit-frame-pointer
-else ifeq ($(PROFILE),release)
+else ifeq ($(PROFILE),RELEASE)
     CFLAGS += -O2 -fdata-sections -ffunction-sections -fomit-frame-pointer
     ASFLAGS += -O2
 else
-    $(error "PROFILE must be 'debug' or 'release'")
+    $(error "PROFILE must be 'DEBUG' or 'RELEASE'")
 endif
 
 export CFLAGS LDFLAGS

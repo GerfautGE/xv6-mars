@@ -87,10 +87,10 @@ LDFLAGS += -z max-page-size=4096
 
 $K/kernel: $(OBJS) $K/kernel.ld $U/initcode
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o $K/kernel $(OBJS)
-ifeq ($(PROFILE), debug)
+ifeq ($(PROFILE), DEBUG)
 		$(OBJDUMP) -S $K/kernel > $K/kernel.asm
 		$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
-else ifeq ($(PROFILE), release)
+else ifeq ($(PROFILE), RELEASE)
 		$(STRIP) --strip-all $K/kernel
 endif
 

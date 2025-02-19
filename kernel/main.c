@@ -31,7 +31,7 @@ main()
     iinit();         // inode table
     fileinit();      // file table
     ramdiskinit();   // ramdisk initialisation
-    #ifdef CONFIG_MARS
+    #ifdef CONFIG_JH7110
     thermal_init();  // thermal sensor initialisation
     #endif
     userinit();      // first user process

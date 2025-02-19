@@ -1,7 +1,7 @@
 #ifndef MEMORY_LAYOUT_H
 #define MEMORY_LAYOUT_H
 
-#ifdef CONFIG_MARS
+#ifdef CONFIG_JH7110
 
 #define KERNBASE 0x40200000L
 //https://lupyuen.codeberg.page/articles/privilege.html#wait-forever-in-uart-transmit

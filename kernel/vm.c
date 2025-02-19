@@ -28,7 +28,7 @@ kvmmake(void)
   // uart registers
   kvmmap(kpgtbl, UART0, UART0, PGSIZE, PTE_R | PTE_W);
 
-  #ifdef CONFIG_MARS
+  #ifdef CONFIG_JH7110
   // thermal sensor (64KB)
   kvmmap(kpgtbl, THERMAL, THERMAL, 0x10000, PTE_R | PTE_W);
 

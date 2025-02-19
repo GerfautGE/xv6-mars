@@ -21,7 +21,7 @@ plicinithart(void)
   int hart = cpuid();
 
   // set enable bits for this hart's S-mode
-  #ifdef CONFIG_MARS
+  #ifdef CONFIG_JH7110
   *(plic_t*)PLIC_SENABLE(hart) = (1ULL << UART0_IRQ);
    #else
   *(plic_t*)PLIC_SENABLE(hart) = (1 << UART0_IRQ);

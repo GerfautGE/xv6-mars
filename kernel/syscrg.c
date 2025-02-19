@@ -1,4 +1,4 @@
-#ifdef CONFIG_MARS
+#ifdef CONFIG_JH7110
 #include "memlayout.h"
 #include "syscrg.h"
 #include "spinlock.h"

@@ -5,12 +5,12 @@
 # ================================================
 
 # Target platform selection
-# Options: qemu, mars
-PLATFORM = mars
+# Options: JH7110, QEMU
+PLATFORM = JH7110
 
 # Build profile
-# Options: debug, release
-PROFILE = debug
+# Options: DEBUG, RELEASE
+PROFILE = DEBUG
 
 # Export the configuration variables for the Makefile
 export PLATFORM PROFILE

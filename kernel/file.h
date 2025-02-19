@@ -39,6 +39,6 @@ struct devsw {
 extern struct devsw devsw[];
 
 #define CONSOLE 1
-#ifdef CONFIG_MARS
+#ifdef CONFIG_JH7110
 #define TEMP    2
 #endif
