@@ -9,11 +9,12 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "io.h"
 
 // the UART control registers are memory-mapped
 // at address UART0. this macro returns the
 // address of one of the registers.
-#define Reg(reg) ((volatile unsigned char *)(UART0 + (reg*UART0_OFFSET)))
+
 
 // the UART control registers.
 // some have different meanings for
@@ -35,9 +36,6 @@
 #define LSR_RX_READY (1<<0)   // input is waiting to be read from RHR
 #define LSR_TX_IDLE (1<<5)    // THR can accept another character to send
 
-#define ReadReg(reg) (*(Reg(reg)))
-#define WriteReg(reg, v) (*(Reg(reg)) = (v))
-
 // the transmit output buffer.
 struct spinlock uart_tx_lock;
 #define UART_TX_BUF_SIZE 32
@@ -53,26 +51,26 @@ void
 uartinit(void)
 {
   // disable interrupts.
-  WriteReg(IER, 0x00);
+  WriteRegShift(UART0, UART0_REGSHIFT, IER, 0x00);
 
   // Set DLAB to 1 to set baud rate.
-  WriteReg(LCR, LCR_BAUD_LATCH);
+  WriteRegShift(UART0, UART0_REGSHIFT, LCR, LCR_BAUD_LATCH);
 
   // LSB for baud rate of 38.4K.
-  WriteReg(0, 0x03);
+  WriteRegShift(UART0, UART0_REGSHIFT, 0, 0x03);
 
   // MSB for baud rate of 38.4K.
-  WriteReg(1, 0x00);
+  WriteRegShift(UART0, UART0_REGSHIFT, 1, 0x00);
 
   // leave set-baud mode,
   // and set word length to 8 bits, no parity.
-  WriteReg(LCR, LCR_EIGHT_BITS);
+  WriteRegShift(UART0, UART0_REGSHIFT, LCR, LCR_EIGHT_BITS);
 
   // reset and enable FIFOs.
-  WriteReg(FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR);
+  WriteRegShift(UART0, UART0_REGSHIFT, FCR, FCR_FIFO_ENABLE | FCR_FIFO_CLEAR);
 
   // enable transmit and receive interrupts.
-  WriteReg(IER, IER_TX_ENABLE | IER_RX_ENABLE);
+  WriteRegShift(UART0, UART0_REGSHIFT, IER, IER_TX_ENABLE | IER_RX_ENABLE);
 
   initlock(&uart_tx_lock, "uart");
 }
@@ -104,7 +102,7 @@ uartputc(int c)
 }
 
 
-// alternate version of uartputc() that doesn't 
+// alternate version of uartputc() that doesn't
 // use interrupts, for use by kernel printf() and
 // to echo characters. it spins waiting for the uart's
 // output register to be empty.
@@ -119,9 +117,9 @@ uartputc_sync(int c)
   }
 
   // wait for Transmit Holding Empty to be set in LSR.
-  while((ReadReg(LSR) & LSR_TX_IDLE) == 0)
+  while((ReadRegShift(UART0, UART0_REGSHIFT, LSR) & LSR_TX_IDLE) == 0)
     ;
-  WriteReg(THR, c);
+  WriteRegShift(UART0, UART0_REGSHIFT, THR, c);
 
   pop_off();
 }
@@ -136,11 +134,11 @@ uartstart()
   while(1){
     if(uart_tx_w == uart_tx_r){
       // transmit buffer is empty.
-      ReadReg(ISR);
+      ReadRegShift(UART0, UART0_REGSHIFT, ISR);
       return;
     }
 
-    if((ReadReg(LSR) & LSR_TX_IDLE) == 0){
+    if((ReadRegShift(UART0, UART0_REGSHIFT, LSR) & LSR_TX_IDLE) == 0){
       // the UART transmit holding register is full,
       // so we cannot give it another byte.
       // it will interrupt when it's ready for a new byte.
@@ -153,7 +151,7 @@ uartstart()
     // maybe uartputc() is waiting for space in the buffer.
     wakeup(&uart_tx_r);
 
-    WriteReg(THR, c);
+    WriteRegShift(UART0, UART0_REGSHIFT, THR, c);
   }
 }
 
@@ -162,9 +160,9 @@ uartstart()
 int
 uartgetc(void)
 {
-  if(ReadReg(LSR) & 0x01){
+  if(ReadRegShift(UART0, UART0_REGSHIFT, LSR) & 0x01){
     // input data is ready.
-    return ReadReg(RHR);
+    return ReadRegShift(UART0, UART0_REGSHIFT, RHR);
   } else {
     return -1;
   }

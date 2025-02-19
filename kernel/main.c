@@ -1,3 +1,4 @@
+#include "thermal.h"
 #include "types.h"
 #include "param.h"
 #include "memlayout.h"
@@ -30,6 +31,9 @@ main()
     iinit();         // inode table
     fileinit();      // file table
     ramdiskinit();   // ramdisk initialisation
+    #ifdef CONFIG_JH7110
+    thermal_init();  // thermal sensor initialisation
+    #endif
     userinit();      // first user process
     __sync_synchronize();
     started = 1;

@@ -346,6 +346,9 @@ sfence_vma()
   asm volatile("sfence.vma zero, zero");
 }
 
+/// call after changing executable code in memory to flush instruction caches
+#define instruction_memory_barrier() asm volatile("fence.i")
+
 typedef uint64 pte_t;
 typedef uint64 *pagetable_t; // 512 PTEs
 

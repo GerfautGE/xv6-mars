@@ -7,13 +7,15 @@ An attempt to port [xv6-riscv](https://github.com/mit-pdos/xv6-riscv) to the [Mi
 
 ## Features
 
-**xv6-mars** supports:
-
-- SBI timers
-- SBI HSM to start
-- a ramdisk
-- UART
-
+| Feature                   | MilkV Mars specific |
+|---------------------------|---------------------|
+|SBI timers                 | No                  |
+|SBI HSM (start)            | No                  |
+|RamDisk                    | No                  |
+|UART                       | Yes (config differs)|
+|Buddy Allocator            | No                  |
+|Multilevel Queue Scheduling| No                  |
+|CPU Temperature Sensor     | Yes                 |
 
 ## Run
 

@@ -20,6 +20,11 @@ main(void)
     mknod("console", CONSOLE, 0);
     open("console", O_RDWR);
   }
+  #ifdef CONFIG_JH7110
+  // temp pseudo-file for thermal sensor
+  mknod("temp", TEMP, 0);
+  #endif
+
   dup(0);  // stdout
   dup(0);  // stderr
 

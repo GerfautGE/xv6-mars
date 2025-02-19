@@ -1,5 +1,6 @@
 # load the kernel configuration
 include config.mk
+include opts.mk
 
 K=kernel
 U=user
@@ -35,6 +36,8 @@ OBJS = \
   $K/buddy.o \
   $K/list.o \
   $K/sbi.o \
+  $K/thermal.o \
+  $K/syscrg.o \
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
@@ -61,13 +64,16 @@ AS = $(TOOLPREFIX)gas
 LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
+STRIP = $(TOOLPREFIX)strip
 
-CFLAGS += -Wall -Werror -O -fno-omit-frame-pointer -ggdb
+CFLAGS += -Wall -Werror
 CFLAGS += -MD
-CFLAGS += -mcmodel=medany
+CFLAGS += -mcmodel=medany -fno-plt
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
 CFLAGS += -I.
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
+
+ASFLAGS += -march=rv64gc
 
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
@@ -81,11 +87,15 @@ LDFLAGS += -z max-page-size=4096
 
 $K/kernel: $(OBJS) $K/kernel.ld $U/initcode
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o $K/kernel $(OBJS)
-	$(OBJDUMP) -S $K/kernel > $K/kernel.asm
-	$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
+ifeq ($(PROFILE), DEBUG)
+		$(OBJDUMP) -S $K/kernel > $K/kernel.asm
+		$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
+else ifeq ($(PROFILE), RELEASE)
+		$(STRIP) --strip-all $K/kernel
+endif
 
 $U/initcode: $U/initcode.S
-	$(CC) $(CFLAGS) -march=rv64g -nostdinc -I. -Ikernel -c $U/initcode.S -o $U/initcode.o
+	$(CC) $(CFLAGS) -nostdinc -I. -Ikernel -c $U/initcode.S -o $U/initcode.o
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0 -o $U/initcode.out $U/initcode.o
 	$(OBJCOPY) -S -O binary $U/initcode.out $U/initcode
 	$(OBJDUMP) -S $U/initcode.o > $U/initcode.asm
@@ -140,6 +150,7 @@ UPROGS=\
 	$U/_zombie\
 	$U/_primes\
 	$U/_reboot\
+	$U/_nice \
 
 fs.img: mkfs/mkfs _README $(UPROGS)
 	mkfs/mkfs fs.img _README $(UPROGS)

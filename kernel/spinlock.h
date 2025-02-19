@@ -5,5 +5,8 @@ struct spinlock {
   // For debugging:
   char *name;        // Name of lock.
   struct cpu *cpu;   // The cpu holding the lock.
+  uint64 pc;
+  int pid;
+  uint n;
+  uint nts;
 };
-

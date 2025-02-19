@@ -1,4 +1,8 @@
 #include "types.h"
+#include "param.h"
+#include "memlayout.h"
+#include "riscv.h"
+#include "defs.h"
 
 void*
 memset(void *dst, int c, uint n)
@@ -105,3 +109,10 @@ strlen(const char *s)
   return n;
 }
 
+char* strdup(char *s){
+  int n = 0;
+  n = strlen(s) + 1;
+  char* d = bd_malloc(n);
+  safestrcpy(d, s, n);
+  return d;
+}

@@ -5,20 +5,12 @@
 # ================================================
 
 # Target platform selection
-# Options: qemu, mars
-PLATFORM = mars
+# Options: JH7110, QEMU
+PLATFORM = JH7110
 
-# Platform-specific compilation options
-ifeq ($(PLATFORM),mars)
-    CFLAGS += -DCONFIG_MARS
-    LDFLAGS += --defsym=KERNBASE=0x40200000
-else ifeq ($(PLATFORM),qemu)
-    CFLAGS += -DCONFIG_QEMU
-    LDFLAGS += --defsym=KERNBASE=0x80200000
-else
-    $(error "PLATFORM must be 'qemu' or 'mars'")
-endif
-
+# Build profile
+# Options: DEBUG, RELEASE
+PROFILE = DEBUG
 
 # Export the configuration variables for the Makefile
-export PLATFORM CFLAGS LDFLAGS
+export PLATFORM PROFILE

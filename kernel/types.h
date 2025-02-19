@@ -13,8 +13,8 @@ typedef unsigned long uint64;
 typedef uint64 pde_t;
 
 
-#if defined(CONFIG_MARS)
-    typedef uint64 plic_t;  // Si CONFIG_MARS est défini, utilise uint64
+#if defined(CONFIG_JH7110)
+    typedef uint64 plic_t;  // Si CONFIG_JH7110 est défini, utilise uint64
 #else
     typedef uint32 plic_t;  // Sinon, utilise uint32
 #endif

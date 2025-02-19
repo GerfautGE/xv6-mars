@@ -5,6 +5,7 @@
 #include "riscv.h"
 #include "defs.h"
 #include "fs.h"
+#include "syscrg.h"
 
 /*
  * the kernel's page table.
@@ -26,6 +27,14 @@ kvmmake(void)
 
   // uart registers
   kvmmap(kpgtbl, UART0, UART0, PGSIZE, PTE_R | PTE_W);
+
+  #ifdef CONFIG_JH7110
+  // thermal sensor (64KB)
+  kvmmap(kpgtbl, THERMAL, THERMAL, 0x10000, PTE_R | PTE_W);
+
+  // syscrg (64KB)
+  kvmmap(kpgtbl, SYSCRG, SYSCRG, 0x10000, PTE_R | PTE_W);
+  #endif
 
   // ramdisk
   kvmmap(kpgtbl, RAMDISK, RAMDISK, PGSIZE*BSIZE, PTE_R | PTE_W);
@@ -65,6 +74,11 @@ kvminithart()
   sfence_vma();
 
   w_satp(MAKE_SATP(kernel_pagetable));
+
+  // Depending on the cpu implementation a memory barrier might
+  // not affect the instruction caches, so after loading executable
+  // code an instruction memory barrier is needed.
+  instruction_memory_barrier();
 
   // flush stale entries from the TLB.
   sfence_vma();
