@@ -9,6 +9,8 @@ struct sleeplock;
 struct stat;
 struct superblock;
 
+#include "memlayout.h"
+
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);
@@ -211,3 +213,6 @@ void sbi_set_timer(uint64);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+// references to ptes
+extern int ref_count[PHYSTOP/PGSIZE];

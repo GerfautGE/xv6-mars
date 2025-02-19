@@ -26,7 +26,13 @@ kinit()
 void
 kfree(void *pa)
 {
-  bd_free(pa);
+  // if pa is poined to by more than one ref_count, decrement ref_count and return
+  if (ref_count[(uint64)pa/PGSIZE] > 1) {
+    ref_count[(uint64)pa/PGSIZE]--;
+  } else {
+    ref_count[(uint64)pa/PGSIZE] = 0;
+    bd_free(pa);
+  }
 }
 
 // Allocate one 4096-byte page of physical memory.
@@ -35,5 +41,11 @@ kfree(void *pa)
 void *
 kalloc(void)
 {
-  return bd_malloc(PGSIZE);
+  void *pa = bd_malloc(PGSIZE);
+  if (pa) {
+    ref_count[(uint64)pa/PGSIZE] = 1;
+    return pa;
+  } else {
+    panic("kalloc out of memory");
+  }
 }

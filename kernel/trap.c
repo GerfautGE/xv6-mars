@@ -67,6 +67,41 @@ usertrap(void)
     syscall();
   } else if((which_dev = devintr()) != 0){
     // ok
+  } else if(r_scause() == 0xf) {
+    // RISC-V Page Fault
+    pagetable_t my_pagetable = p->pagetable;
+
+    if(r_stval() >= MAXVA){
+      p->killed = 1;
+      exit(-1);
+    }
+
+    pte_t *my_pte = walk(my_pagetable, r_stval(), 0);
+    uint64 pa = PTE2PA(*my_pte);
+
+    // Copy On Write (COW)
+    if((*my_pte&PTE_COW)&&ref_count[pa/PGSIZE] != 1){
+      char *mem;
+      uint flags = PTE_FLAGS(*my_pte);
+      flags &= ~PTE_COW;
+      flags |= PTE_W;
+
+      if ((mem = kalloc()) == 0) {
+        p->killed = 1;
+        exit(-1);
+      }
+
+      memmove(mem, (char*)pa, PGSIZE);
+      *my_pte = PA2PTE(mem) | flags;
+      kfree((void*)pa);
+      ref_count[pa/PGSIZE]--;
+
+      p->trapframe->epc = r_sepc();
+    } else if ((*my_pte&PTE_COW)&&ref_count[pa/PGSIZE]==1){
+      *my_pte &= ~PTE_COW;
+      *my_pte |= PTE_W;
+      p->trapframe->epc = r_sepc();
+    }
   } else {
     printf("usertrap(): unexpected scause 0x%lx pid=%d\n", r_scause(), p->pid);
     printf("            sepc=0x%lx stval=0x%lx\n", r_sepc(), r_stval());
