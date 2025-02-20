@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "hasht.h"
 
 struct cpu cpus[NCPU];
 
@@ -28,6 +29,9 @@ extern char trampoline[]; // trampoline.S
 // memory model when using p->parent.
 // must be acquired before any p->lock.
 struct spinlock wait_lock;
+
+// Global Hash Table for processes
+struct ht_table *ht = 0;
 
 // Allocate a page for each process's kernel stack.
 // Map it high in memory, followed by an invalid
@@ -86,7 +90,7 @@ void remove_from_prio_queue(struct proc* p){
   prio[p->priority] = head;
 }
 
-// initialize the proc table.
+// initialize the proc table and hash table
 void
 procinit(void)
 {
@@ -99,6 +103,7 @@ procinit(void)
       p->state = UNUSED;
       p->kstack = KSTACK((int) (p - proc));
   }
+  ht = ht_create(5); // 5 is a good size for the hash table containing 2 processes
 }
 
 // Must be called with interrupts disabled,
@@ -167,6 +172,9 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
+  
+  // Insert into hash table
+  ht_insert(ht, p->pid, p);
 
   // Allocate a trapframe page.
   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
@@ -199,6 +207,9 @@ found:
 static void
 freeproc(struct proc *p)
 {
+  // Remove from hash table
+  ht_remove_item(ht, p->pid);
+  
   if(p->trapframe)
     kfree((void*)p->trapframe);
   p->trapframe = 0;
@@ -298,6 +309,9 @@ userinit(void)
   p->cmd = strdup("init");
   p->cwd = namei("/");
   p->state = RUNNABLE;
+  
+  // insert into hash table
+  ht_insert(ht, p->pid, p);
 
   release(&p->lock);
 }
@@ -337,6 +351,9 @@ fork(void)
   if((np = allocproc()) == 0){
     return -1;
   }
+  
+  // Insert into hash table
+  ht_insert(ht, np->pid, np);
 
   // Copy user memory from parent to child.
   if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
@@ -562,40 +579,36 @@ scheduler(void)
 int
 nice(int pid, int priority) 
 {
-  struct proc * p;
-  for(int idx_prio=0; idx_prio < NPRIO; idx_prio++)
+  struct proc * p = ht_get(ht, pid);
+  if (p->pid == pid)
   {
-    //prio_lock own priority
-    if (prio_lock[idx_prio].locked == 1) continue;
-    acquire(&prio_lock[idx_prio]);
-    struct list_proc *lst_prio = prio[idx_prio];
-    while(lst_prio)
-    {
-      p = lst_prio->p;
-      if (p->pid == pid) //we found the process we want to change the priority
-      {
-        //check if priority has changed
-        if (p->priority != idx_prio)
-        {
-          release(&prio_lock[idx_prio]);
-          nice(pid, priority);
-        }
-        if (idx_prio != priority) // we really change priority (avoid nice 1 5) if 1.priority = 5 to crash
-        {
-          remove_from_prio_queue(p);
-          p->priority = priority;
-          acquire(&prio_lock[priority]); //prio_lock target priority
-          insert_into_prio_queue(p);  //insert
-          release(&prio_lock[priority]);
-        }
-        release(&prio_lock[idx_prio]);
-        return 1;
+    acquire(&prio_lock[p->priority]);
+    remove_from_prio_queue(p);
+    p->priority = priority;
+    acquire(&prio_lock[priority]);
+    insert_into_prio_queue(p);
+    release(&prio_lock[p->priority]);
+    release(&prio_lock[priority]);
+    return 0;
+  } else {
+    #ifdef DEBUG
+    printf("nice: pid %d not found via Hash table\n", pid);
+    #endif
+    for(p = proc; p < &proc[NPROC]; p++){
+      acquire(&p->lock);
+      if(p->pid == pid){
+        remove_from_prio_queue(p);
+        p->priority = priority;
+        acquire(&prio_lock[priority]);
+        insert_into_prio_queue(p);
+        release(&p->lock);
+        release(&prio_lock[priority]);
+        return 0;
       }
-      lst_prio = lst_prio->next;
+      release(&p->lock);
     }
-    release(&prio_lock[idx_prio]);
+    return -1;
   }
-  return 0;
 }
 
 // Switch to scheduler.  Must hold only p->lock
@@ -715,22 +728,36 @@ wakeup(void *chan)
 int
 kill(int pid)
 {
-  struct proc *p;
-
-  for(p = proc; p < &proc[NPROC]; p++){
+  struct proc *p = ht_get(ht, pid);
+  if (p->pid == pid)
+  {
     acquire(&p->lock);
-    if(p->pid == pid){
-      p->killed = 1;
-      if(p->state == SLEEPING){
-        // Wake process from sleep().
-        p->state = RUNNABLE;
-      }
-      release(&p->lock);
-      return 0;
+    p->killed = 1;
+    if(p->state == SLEEPING){
+      // Wake process from sleep().
+      p->state = RUNNABLE;
     }
     release(&p->lock);
+    return 0;
+  } else {
+    #ifdef DEBUG
+    printf("kill: pid %d not found via Hash table\n", pid);
+    #endif
+    for(p = proc; p < &proc[NPROC]; p++){
+      acquire(&p->lock);
+      if(p->pid == pid){
+        p->killed = 1;
+        if(p->state == SLEEPING){
+          // Wake process from sleep().
+          p->state = RUNNABLE;
+        }
+        release(&p->lock);
+        return 0;
+      }
+      release(&p->lock);
+    }
+    return -1;
   }
-  return -1;
 }
 
 void
