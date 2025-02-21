@@ -1,6 +1,8 @@
 #ifndef HASHT_H
 #define HASHT_H
 
+#define HT_INITIAL_BASE_SIZE 7
+
 struct ht_item {
   int key;
   struct proc *value;
@@ -19,6 +21,6 @@ void ht_insert(struct ht_table *ht, int key, struct proc *value);
 int ht_remove_item(struct ht_table *ht, int key);
 struct proc *ht_get(struct ht_table *ht, int key);
 int ht_hash(int key, int size);
-void ht_resize(struct ht_table *ht, int new_size);
+void ht_resize(struct ht_table **ht, int new_size);
 
 #endif // HASHT_H

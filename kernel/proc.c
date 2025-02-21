@@ -103,7 +103,11 @@ procinit(void)
       p->state = UNUSED;
       p->kstack = KSTACK((int) (p - proc));
   }
-  ht = ht_create(5); // 5 is a good size for the hash table containing 2 processes
+  ht = ht_create(HT_INITIAL_BASE_SIZE);
+  if (ht == 0)
+  {
+    panic("Failed to create process hash table");
+  }
 }
 
 // Must be called with interrupts disabled,
@@ -172,7 +176,7 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
-  
+
   // Insert into hash table
   ht_insert(ht, p->pid, p);
 
@@ -209,7 +213,7 @@ freeproc(struct proc *p)
 {
   // Remove from hash table
   ht_remove_item(ht, p->pid);
-  
+
   if(p->trapframe)
     kfree((void*)p->trapframe);
   p->trapframe = 0;
@@ -309,9 +313,6 @@ userinit(void)
   p->cmd = strdup("init");
   p->cwd = namei("/");
   p->state = RUNNABLE;
-  
-  // insert into hash table
-  ht_insert(ht, p->pid, p);
 
   release(&p->lock);
 }
@@ -344,16 +345,13 @@ fork(void)
   int i, pid;
   struct proc *np;
   struct proc *p = myproc();
-  
+
   acquire(&prio_lock[p->priority]);
 
   // Allocate process.
   if((np = allocproc()) == 0){
     return -1;
   }
-  
-  // Insert into hash table
-  ht_insert(ht, np->pid, np);
 
   // Copy user memory from parent to child.
   if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
@@ -388,10 +386,10 @@ fork(void)
   acquire(&np->lock);
   np->priority = p->priority;
   np->state = RUNNABLE;
-  
+
   insert_into_prio_queue(np);
   release(&prio_lock[p->priority]);
-  
+
   release(&np->lock);
 
   return pid;
@@ -436,7 +434,7 @@ exit(int status)
   iput(p->cwd);
   end_op();
   p->cwd = 0;
-  
+
   int priority = p->priority;
   acquire(&prio_lock[priority]);
   acquire(&wait_lock);
@@ -453,7 +451,7 @@ exit(int status)
   p->state = ZOMBIE;
 
   release(&wait_lock);
-  
+
   remove_from_prio_queue(p);
   release(&prio_lock[priority]);
 
@@ -544,7 +542,7 @@ scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
-  
+
   c->proc = 0;
   for(;;){
     // Avoid deadlock by giving devices a chance to interrupt.
@@ -577,7 +575,7 @@ scheduler(void)
 }
 
 int
-nice(int pid, int priority) 
+nice(int pid, int priority)
 {
   struct proc * p = ht_get(ht, pid);
   if (p->pid == pid)
