@@ -4,11 +4,11 @@
 #include "memlayout.h"
 #include "riscv.h"
 
-void*           kalloc(void);
-void            kfree(void *);
-void            kinit(void);
+void *kalloc(void);
+void kfree(void *);
+void kinit(void);
 
 // references to ptes
-extern int ref_count[PHYSTOP/PGSIZE];
+extern int ref_count[PHYSTOP / PGSIZE];
 
 #endif // KALLOC_H

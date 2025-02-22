@@ -5,6 +5,6 @@
 
 void ramdiskinit(void);
 void ramdiskintr(void);
-void ramdiskrw(struct buf*, int);
+void ramdiskrw(struct buf *, int);
 
-#endif //RAMDISK_H
+#endif // RAMDISK_H
