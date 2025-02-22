@@ -1,7 +1,6 @@
 #ifndef SYSCRG_H
 #define SYSCRG_H
 
-#include "types.h"
 struct spinlock;
 
 /* register fields */

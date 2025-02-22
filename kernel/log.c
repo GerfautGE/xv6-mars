@@ -1,11 +1,10 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "buf.h"
+#include <kernel/param.h>
+#include <kernel/spinlock.h>
+#include <kernel/buf.h>
+#include <kernel/printf.h>
+#include <kernel/bio.h>
+#include <kernel/string.h>
+#include <kernel/proc.h>
 
 // Simple logging that allows concurrent FS system calls.
 //
@@ -233,4 +232,3 @@ log_write(struct buf *b)
   }
   release(&log.lock);
 }
-

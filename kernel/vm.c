@@ -1,11 +1,12 @@
-#include "param.h"
-#include "types.h"
-#include "memlayout.h"
-#include "elf.h"
-#include "riscv.h"
-#include "defs.h"
-#include "fs.h"
-#include "syscrg.h"
+#include <kernel/memlayout.h>
+#include <kernel/kalloc.h>
+#include <kernel/param.h>
+#include <kernel/printf.h>
+#include <kernel/vm.h>
+#include <kernel/string.h>
+#include <kernel/proc.h>
+#include <kernel/fs.h>
+
 
 // counter of references to each page
 int ref_count[PHYSTOP/PGSIZE];

@@ -1,10 +1,16 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
+#include <kernel/types.h>
+#include <kernel/spinlock.h>
+#include <kernel/riscv.h>
+#include <kernel/proc.h>
+#include <kernel/printf.h>
+#include <kernel/syscall.h>
+#include <kernel/vm.h>
+#include <kernel/kalloc.h>
+#include <kernel/plic.h>
+#include <kernel/uart.h>
+#include <kernel/sbi.h>
+#include <kernel/trap.h>
+#include <kernel/string.h>
 
 struct spinlock tickslock;
 uint ticks;

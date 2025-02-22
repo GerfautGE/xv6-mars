@@ -1,11 +1,16 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
-#include "hasht.h"
+#include <kernel/param.h>
+#include <kernel/proc.h>
+#include <kernel/kalloc.h>
+#include <kernel/printf.h>
+#include <kernel/vm.h>
+#include <kernel/file.h>
+#include <kernel/log.h>
+#include <kernel/assembly.h>
+#include <kernel/hasht.h>
+#include <kernel/string.h>
+#include <kernel/trap.h>
+#include <kernel/buddy.h>
+#include <macros.h>
 
 struct cpu cpus[NCPU];
 
@@ -814,12 +819,12 @@ void
 procdump(void)
 {
   static char *states[] = {
-  [UNUSED]    "unused",
-  [USED]      "used",
-  [SLEEPING]  "sleep ",
-  [RUNNABLE]  "runble",
-  [RUNNING]   "run   ",
-  [ZOMBIE]    "zombie"
+  [UNUSED]   =  "unused",
+  [USED]     =  "used",
+  [SLEEPING] =  "sleep ",
+  [RUNNABLE] =  "runble",
+  [RUNNING]  =  "run   ",
+  [ZOMBIE]   =  "zombie"
   };
   struct proc *p;
   char *state;

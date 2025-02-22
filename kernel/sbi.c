@@ -1,8 +1,8 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
+#include <kernel/types.h>
+#include <kernel/param.h>
+#include <kernel/memlayout.h>
+#include <kernel/riscv.h>
+#include <kernel/proc.h>
 
 struct sbiret
 {
@@ -55,7 +55,7 @@ void startothers(int boot_hartid)
 }
 
 uint64
-inline sbi_reboot(void)
+sbi_reboot(void)
 {
   // SBI call to sbi_system_reset(uint32_t reset_type, uint32_t reset_reason)
   uint32 reset_type = 0x1; // cold reboot
@@ -64,7 +64,6 @@ inline sbi_reboot(void)
   return 0;
 }
 
-inline void sbi_set_timer(uint64 delay){
-  uint64 time = r_time() + delay;
-  sbi_ecall(0x54494D45, 0x0, time, 0, 0, 0, 0, 0);
+void sbi_set_timer(uint64 delay){
+  sbi_ecall(0x54494D45, 0x0, r_time() + delay, 0, 0, 0, 0, 0);
 }

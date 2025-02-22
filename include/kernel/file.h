@@ -1,3 +1,18 @@
+#ifndef FILE_H
+#define FILE_H
+
+#include "types.h"
+#include "sleeplock.h"
+#include "param.h"
+
+struct file*    filealloc(void);
+void            fileclose(struct file*);
+struct file*    filedup(struct file*);
+void            fileinit(void);
+int             fileread(struct file*, uint64, int n);
+int             filestat(struct file*, uint64 addr);
+int             filewrite(struct file*, uint64, int n);
+
 struct file {
   enum { FD_NONE, FD_PIPE, FD_INODE, FD_DEVICE , FD_MUTEX} type;
   int ref; // reference count
@@ -39,6 +54,9 @@ struct devsw {
 extern struct devsw devsw[];
 
 #define CONSOLE 1
+
 #ifdef CONFIG_JH7110
 #define TEMP    2
 #endif
+
+#endif // FILE_H

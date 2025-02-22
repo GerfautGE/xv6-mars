@@ -1,20 +1,12 @@
 #ifdef CONFIG_JH7110
 
-#include "memlayout.h"
-#include "thermal.h"
-#include "io.h"
-#include "types.h"
-#include "syscrg.h"
-#include "types.h"
-#include "param.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "riscv.h"
-#include "defs.h"
-#include "proc.h"
-#include "stat.h"
+#include <kernel/spinlock.h>
+#include <kernel/memlayout.h>
+#include <kernel/syscrg.h>
+#include <kernel/io.h>
+#include <kernel/thermal.h>
+#include <kernel/file.h>
+#include <kernel/proc.h>
 
 
 void thermal_init() {

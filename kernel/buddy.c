@@ -1,9 +1,7 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "riscv.h"
-#include "defs.h"
+#include <kernel/spinlock.h>
+#include <kernel/list.h>
+#include <kernel/printf.h>
+#include <kernel/string.h>
 
 // Buddy allocator
 

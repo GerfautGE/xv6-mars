@@ -1,4 +1,8 @@
+#ifndef RISCV_H
+#define RISCV_H
 #ifndef __ASSEMBLER__
+
+#include "types.h"
 
 // which hart (core) is this?
 static inline uint64
@@ -276,7 +280,7 @@ r_mcounteren()
 }
 
 // machine-mode cycle counter
-static inline uint64
+inline uint64
 r_time()
 {
   uint64 x;
@@ -349,9 +353,6 @@ sfence_vma()
 /// call after changing executable code in memory to flush instruction caches
 #define instruction_memory_barrier() asm volatile("fence.i")
 
-typedef uint64 pte_t;
-typedef uint64 *pagetable_t; // 512 PTEs
-
 #endif // __ASSEMBLER__
 
 #define PGSIZE 4096 // bytes per page
@@ -387,3 +388,5 @@ typedef uint64 *pagetable_t; // 512 PTEs
 // Sv39, to avoid having to sign-extend virtual addresses
 // that have the high bit set.
 #define MAXVA (1L << (9 + 9 + 9 + 12 - 1))
+
+#endif // RISCV_H

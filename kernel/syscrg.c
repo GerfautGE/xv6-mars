@@ -1,10 +1,8 @@
 #ifdef CONFIG_JH7110
-#include "memlayout.h"
-#include "syscrg.h"
-#include "spinlock.h"
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
+#include <kernel/spinlock.h>
+#include <kernel/printf.h>
+#include <kernel/memlayout.h>
+#include <kernel/syscrg.h>
 
 void clk_enable(int num_clk, struct spinlock *lock){
   volatile uint32 *addr = (volatile uint32 *) (SYSCRG + 4*num_clk);

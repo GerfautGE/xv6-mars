@@ -1,11 +1,12 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "defs.h"
-#include "elf.h"
+#include <kernel/riscv.h>
+#include <kernel/param.h>
+#include <kernel/elf.h>
+#include <kernel/file.h>
+#include <kernel/proc.h>
+#include <kernel/log.h>
+#include <kernel/vm.h>
+#include <kernel/string.h>
+#include <kernel/printf.h>
 
 static int loadseg(pde_t *, uint64, struct inode *, uint, uint);
 

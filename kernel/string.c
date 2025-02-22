@@ -1,8 +1,5 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
+#include <kernel/types.h>
+#include <kernel/buddy.h>
 
 void*
 memset(void *dst, int c, uint n)
@@ -39,7 +36,7 @@ memmove(void *dst, const void *src, uint n)
 
   if(n == 0)
     return dst;
-  
+
   s = src;
   d = dst;
   if(s < d && s + n > d){

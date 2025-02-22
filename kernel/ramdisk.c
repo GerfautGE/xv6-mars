@@ -1,12 +1,8 @@
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "buf.h"
+#include <kernel/spinlock.h>
+#include <kernel/string.h>
+#include <kernel/fs.h>
+#include <kernel/memlayout.h>
+#include <kernel/buf.h>
 
 struct disk {
   char free[8];  // is a descriptor free?

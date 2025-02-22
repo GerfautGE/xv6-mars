@@ -4,17 +4,18 @@
 // user code, and calls into file.c and fs.c.
 //
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "stat.h"
-#include "spinlock.h"
-#include "proc.h"
-#include "fs.h"
-#include "sleeplock.h"
-#include "file.h"
-#include "fcntl.h"
+#include <kernel/syscall.h>
+#include <kernel/file.h>
+#include <kernel/log.h>
+#include <kernel/proc.h>
+#include <kernel/vm.h>
+#include <kernel/pipe.h>
+#include <kernel/kalloc.h>
+#include <kernel/exec.h>
+#include <kernel/fcntl.h>
+#include <kernel/string.h>
+#include <kernel/printf.h>
+#include <macros.h>
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
@@ -85,7 +86,7 @@ sys_write(void)
   struct file *f;
   int n;
   uint64 p;
-  
+
   argaddr(1, &p);
   argint(2, &n);
   if(argfd(0, 0, &f) < 0)
@@ -412,7 +413,7 @@ sys_chdir(void)
   char path[MAXPATH];
   struct inode *ip;
   struct proc *p = myproc();
-  
+
   begin_op();
   if(argstr(0, path, MAXPATH) < 0 || (ip = namei(path)) == 0){
     end_op();
@@ -510,7 +511,7 @@ sys_create_mutex(void)
   char *name = "mutex";
   int fd;
   struct file *f;
-  if ((f = filealloc()) == 0 || (fd = fdalloc(f)) < 0) 
+  if ((f = filealloc()) == 0 || (fd = fdalloc(f)) < 0)
   {
     if(f){
       fileclose(f);

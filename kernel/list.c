@@ -1,9 +1,5 @@
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "riscv.h"
-#include "defs.h"
+#include <kernel/list.h>
+#include <kernel/printf.h>
 
 // double-linked, circular list. double-linked makes remove
 // fast. circular simplifies code, because don't have to check for

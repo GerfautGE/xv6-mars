@@ -1,8 +1,5 @@
-#include "hasht.h"
-#include "param.h"
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
+#include <kernel/buddy.h>
+#include <kernel/hasht.h>
 
 struct ht_table *ht_create(int size) {
   struct ht_table *ht = (struct ht_table *)bd_malloc(sizeof(struct ht_table));

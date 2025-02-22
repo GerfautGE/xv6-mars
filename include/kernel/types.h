@@ -11,6 +11,8 @@ typedef unsigned int  uint32;
 typedef unsigned long uint64;
 
 typedef uint64 pde_t;
+typedef uint64 pte_t;
+typedef uint64 *pagetable_t; // 512 PTEs
 
 
 #if defined(CONFIG_JH7110)

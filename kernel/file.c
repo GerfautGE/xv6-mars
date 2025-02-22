@@ -2,16 +2,13 @@
 // Support functions for system calls that involve file descriptors.
 //
 
-#include "types.h"
-#include "riscv.h"
-#include "defs.h"
-#include "param.h"
-#include "fs.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "file.h"
-#include "stat.h"
-#include "proc.h"
+#include <kernel/spinlock.h>
+#include <kernel/param.h>
+#include <kernel/pipe.h>
+#include <kernel/log.h>
+#include <kernel/printf.h>
+#include <kernel/proc.h>
+#include <kernel/vm.h>
 
 struct devsw devsw[NDEV];
 struct {
@@ -89,7 +86,7 @@ filestat(struct file *f, uint64 addr)
 {
   struct proc *p = myproc();
   struct stat st;
-  
+
   if(f->type == FD_INODE || f->type == FD_DEVICE){
     ilock(f->ip);
     stati(f->ip, &st);
@@ -179,4 +176,3 @@ filewrite(struct file *f, uint64 addr, int n)
 
   return ret;
 }
-

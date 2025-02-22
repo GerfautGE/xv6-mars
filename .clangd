@@ -1,0 +1,2 @@
+CompileFlags:
+    Add: [-I, ../include , -ffreestanding, -nostdlib, -fno-builtin, -Wall, -Werror]

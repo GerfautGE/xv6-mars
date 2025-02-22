@@ -1,13 +1,11 @@
 // Physical memory allocator, for user processes,
 // kernel stacks, page-table pages,
 // and pipe buffers. Allocates whole 4096-byte pages.
-
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "spinlock.h"
-#include "riscv.h"
-#include "defs.h"
+#include <kernel/buddy.h>
+#include <kernel/types.h>
+#include <kernel/param.h>
+#include <kernel/kalloc.h>
+#include <kernel/printf.h>
 
 extern char end[]; // first address after kernel.
                    // defined by kernel.ld.

@@ -1,9 +1,16 @@
-#include "thermal.h"
-#include "types.h"
-#include "param.h"
-#include "memlayout.h"
-#include "riscv.h"
-#include "defs.h"
+#include <kernel/proc.h>
+#include <kernel/console.h>
+#include <kernel/printf.h>
+#include <kernel/vm.h>
+#include <kernel/ramdisk.h>
+#include <kernel/uart.h>
+#include <kernel/trap.h>
+#include <kernel/plic.h>
+#include <kernel/buf.h>
+#include <kernel/sbi.h>
+#include <kernel/bio.h>
+#include <kernel/kalloc.h>
+#include <kernel/thermal.h>
 
 volatile static int started = 0;
 volatile static int boot_hartid = -1;
