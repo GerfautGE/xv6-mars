@@ -2,6 +2,7 @@
 #define THERMAL_H
 
 #include "types.h"
+
 #define SFCTEMP_RSTN (1 << 0) // 0: reset,    1: de-assert
 #define SFCTEMP_PD (1 << 1)   // 0: power up, 1: power down
 #define SFCTEMP_RUN (1 << 2)  // 0: disable,  1: enable

@@ -1,3 +1,6 @@
+#ifndef PARAM_H
+#define PARAM_H
+
 #define NPROC 64                  // maximum number of processes
 #define NCPU 8                    // maximum number of CPUs
 #define NOFILE 16                 // open files per process
@@ -15,3 +18,6 @@
 #define NPRIO 10                  // number of priorities in scheduler
 #define DEF_PRIO 5                // default priority
 #define MAXTRIES 100000           // max number of tries to acquire a lock
+#define NDIRECT 12                // Number of direct block by inode
+
+#endif // PARAM_H

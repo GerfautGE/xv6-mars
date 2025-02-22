@@ -4,15 +4,15 @@
 #define HT_INITIAL_BASE_SIZE 7
 
 struct ht_item {
-  int key;
-  struct proc *value;
-  struct ht_item *next;
+    int key;
+    struct proc *value;
+    struct ht_item *next;
 };
 
 struct ht_table {
-  int size;
-  int count;
-  struct ht_item **items;
+    int size;
+    int count;
+    struct ht_item **items;
 };
 
 struct ht_table *ht_create(int size);

@@ -6,12 +6,12 @@
         # at the same virtual address (TRAMPOLINE)
         # in user and kernel space so that it continues
         # to work when it switches page tables.
-        # kernel.ld causes this code to start at 
+        # kernel.ld causes this code to start at
         # a page boundary.
         #
 
-#include "riscv.h"
-#include "memlayout.h"
+#include <kernel/riscv.h>
+#include <kernel/memlayout.h>
 
 .section trampsec
 .globl trampoline
@@ -19,7 +19,7 @@
 trampoline:
 .align 4
 .globl uservec
-uservec:    
+uservec:
 	#
         # trap.c sets stvec to point here, so
         # traps from user space start here,
@@ -35,7 +35,7 @@ uservec:
         # but it's mapped to the same virtual address
         # (TRAPFRAME) in every process's user page table.
         li a0, TRAPFRAME
-        
+
         # save the user registers in TRAPFRAME
         sd ra, 40(a0)
         sd sp, 48(a0)
@@ -152,7 +152,7 @@ userret:
 
 	# restore user a0
         ld a0, 112(a0)
-        
+
         # return to user mode and user pc.
         # usertrapret() set up sstatus and sepc.
         sret
