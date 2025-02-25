@@ -1,7 +1,7 @@
-#include "kernel/fcntl.h"
-#include "kernel/stat.h"
-#include "kernel/types.h"
-#include "user/user.h"
+#include <kernel/fcntl.h>
+#include <kernel/stat.h>
+#include <kernel/types.h>
+#include <user/user.h>
 
 char buf[512];
 
