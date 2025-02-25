@@ -1,6 +1,6 @@
-#include "kernel/stat.h"
-#include "kernel/types.h"
-#include "user/user.h"
+#include <kernel/stat.h>
+#include <kernel/types.h>
+#include <user/user.h>
 
 void exec_pipe(int fd) {
     int num;
