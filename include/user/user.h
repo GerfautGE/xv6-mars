@@ -1,8 +1,8 @@
 #ifndef USER_H
 #define USER_H
 
-#include "../kernel/types.h"
 #include "../kernel/stat.h"
+#include "../kernel/types.h"
 
 // system calls
 int fork(void);
