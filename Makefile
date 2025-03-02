@@ -107,6 +107,10 @@ tags: $(OBJS) _init
 
 ULIB = $U/ulib.o $U/usys.o $U/printf.o $U/umalloc.o
 
+$U/_rs: $U/rs.rs $(ULIB)
+	rustc --target riscv64gc-unknown-none-elf --emit=obj -o $U/rs.o $U/rs.rs
+	$(LD) $(LDFLAGS) -T $U/user.ld $U/rs.o $(ULIB) -o $U/_rs
+
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -T $U/user.ld -o $@ $^
 	$(OBJDUMP) -S $@ > $*.asm
@@ -154,8 +158,8 @@ UPROGS=\
 	$U/_reboot\
 	$U/_nice \
 
-fs.img: mkfs/mkfs _README $(UPROGS)
-	mkfs/mkfs fs.img _README $(UPROGS)
+fs.img: mkfs/mkfs _README $(UPROGS) $U/_rs
+	mkfs/mkfs fs.img _README $(UPROGS) $U/_rs
 
 -include kernel/*.d user/*.d
 
