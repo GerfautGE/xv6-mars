@@ -49,4 +49,5 @@ int main(int argc, char **argv[]) {
     close(p[1]);
     exec_pipe(p[0]);
     close(p[0]);
+    return 0;
 }
