@@ -9,13 +9,17 @@ struct spinlock;
 // https://doc-en.rvspace.org/JH7110/TRM/JH7110_TRM/sys_crg.html#sys_crg__section_v3t_pfn_wsb
 
 /* JH7110 clocks */
-#define SYSCLK_TEMP_APB 129  // Bus
+#define SYSCLK_WDT_APB   122 // Bus
+#define SYSCLK_WDT_CORE  123 // Sense
+#define SYSCLK_TEMP_APB  129 // Bus
 #define SYSCLK_TEMP_CORE 130 // Sense
 
 /* JH7110 resets */
 #define RSTN_BASE 190 // End of the clock list
 // to assert or deassert a reset, write a 1 or 0 to the corresponding bit
-#define RSTN_TEMP_APB 123  // Bus
+#define RSTN_WDT_APB   109 // Bus
+#define RSTN_WDT_CORE  110 // Sense
+#define RSTN_TEMP_APB  123 // Bus
 #define RSTN_TEMP_CORE 124 // Sense
 
 /* Prototypes */
