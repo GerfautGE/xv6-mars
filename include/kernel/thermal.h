@@ -15,6 +15,5 @@
 #define SFCTEMP_K1000 81100L
 
 void thermal_init();
-int thermalread(int, uint64, int);
 
 #endif // THERMAL_H

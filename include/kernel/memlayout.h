@@ -12,9 +12,12 @@
 #define PLIC_SPRIORITY(hart) (PLIC + 0x202000 + (hart) * 0x2000)
 #define PLIC_SCLAIM(hart) (PLIC + 0x202004 + (hart) * 0x2000)
 
-#define THERMAL 0X120E0000L
+#define THERMAL 0x120E0000L
 #define SYSCRG 0x13020000L
 #define SYSCRG_RANGE 0x10000
+
+#define WATCHDOG 0x13070000L
+#define WATCHDOG_RANGE 0x10000
 
 #else
 

@@ -11,11 +11,13 @@
 #include <kernel/types.h>
 #include <kernel/uart.h>
 #include <kernel/vm.h>
+#include <kernel/watchdog.h>
 
 struct spinlock tickslock;
 uint ticks;
 
 extern char trampoline[], uservec[], userret[];
+extern int panicked; // from printf.c
 
 // in kernelvec.S, calls kerneltrap().
 void kernelvec();
@@ -200,6 +202,9 @@ void clockintr() {
         wakeup(&ticks);
         release(&tickslock);
     }
+    // feed the watchdog
+    if (!panicked)
+    	watchdog_feed();
 
     // ask for the next timer interrupt. this also clears
     // the interrupt request. 1000000 is about a tenth

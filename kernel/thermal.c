@@ -8,30 +8,7 @@
 #include <kernel/syscrg.h>
 #include <kernel/thermal.h>
 
-void thermal_init() {
-    // enable clock
-    struct spinlock temp_lock;
-    initlock(&temp_lock, "temp");
-
-    clk_enable(SYSCLK_TEMP_APB, &temp_lock);
-    clk_enable(SYSCLK_TEMP_CORE, &temp_lock);
-
-    rst_deassert(RSTN_TEMP_APB, &temp_lock);
-    rst_deassert(RSTN_TEMP_CORE, &temp_lock);
-
-    WriteReg(THERMAL, 0, SFCTEMP_PD);   // Power down the thermal sensor
-    WriteReg(THERMAL, 0, 0);            // Power Up
-    WriteReg(THERMAL, 0, SFCTEMP_RSTN); // De-assert reset
-
-    // enable thermal sensor
-    WriteReg(THERMAL, 0, SFCTEMP_RUN | SFCTEMP_RSTN);
-
-    // Associate the file structure with the device
-    devsw[TEMP].read = thermalread;
-    devsw[TEMP].write = 0;
-}
-
-int thermalread(int user_dst, uint64 dst, int n) {
+static int thermal_read(int user_dst, uint64 dst, int n) {
     uint32 temp;
     uint32 dout = *((volatile uint32 *)(THERMAL)) & SFCTEMP_DOUT_MSK;
     dout >>= SFCTEMP_DOUT_POS; // Shift to get the output value
@@ -65,6 +42,29 @@ int thermalread(int user_dst, uint64 dst, int n) {
 
     offset += to_copy;
     return to_copy; // Return bytes written
+}
+
+void thermal_init() {
+    // enable clock
+    struct spinlock temp_lock;
+    initlock(&temp_lock, "temp");
+
+    clk_enable(SYSCLK_TEMP_APB, &temp_lock);
+    clk_enable(SYSCLK_TEMP_CORE, &temp_lock);
+
+    rst_deassert(RSTN_TEMP_APB, &temp_lock);
+    rst_deassert(RSTN_TEMP_CORE, &temp_lock);
+
+    WriteReg(THERMAL, 0, SFCTEMP_PD);   // Power down the thermal sensor
+    WriteReg(THERMAL, 0, 0);            // Power Up
+    WriteReg(THERMAL, 0, SFCTEMP_RSTN); // De-assert reset
+
+    // enable thermal sensor
+    WriteReg(THERMAL, 0, SFCTEMP_RUN | SFCTEMP_RSTN);
+
+    // Associate the file structure with the device
+    devsw[TEMP].read = thermal_read;
+    devsw[TEMP].write = 0;
 }
 
 #endif

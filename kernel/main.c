@@ -11,6 +11,7 @@
 #include <kernel/trap.h>
 #include <kernel/uart.h>
 #include <kernel/vm.h>
+#include <kernel/watchdog.h>
 
 volatile static int started = 0;
 volatile static int boot_hartid = -1;
@@ -37,7 +38,8 @@ void main() {
         fileinit();               // file table
         ramdiskinit();            // ramdisk initialisation
 #ifdef CONFIG_JH7110
-        thermal_init(); // thermal sensor initialisation
+	watchdog_init(); // watchdog init
+        thermal_init();  // thermal sensor initialisation
 #endif
         userinit(); // first user process
         __sync_synchronize();
