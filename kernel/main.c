@@ -1,6 +1,7 @@
 #include <kernel/bio.h>
 #include <kernel/buf.h>
 #include <kernel/console.h>
+#include <kernel/gmac.h>
 #include <kernel/kalloc.h>
 #include <kernel/plic.h>
 #include <kernel/printf.h>
@@ -40,6 +41,7 @@ void main() {
 #ifdef CONFIG_JH7110
 	watchdog_init(); // watchdog init
         thermal_init();  // thermal sensor initialisation
+	gmac_init();	// gmac initialisation
 #endif
         userinit(); // first user process
         __sync_synchronize();

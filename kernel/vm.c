@@ -38,6 +38,9 @@ pagetable_t kvmmake(void) {
     
     // watchdog (64KB)
     kvmmap(kpgtbl, WATCHDOG, WATCHDOG, WATCHDOG_RANGE, PTE_R | PTE_W);
+
+    // GMAC0 (64KB)
+    kvmmap(kpgtbl, GMAC0_BASE, GMAC0_BASE, GMAC0_RANGE, PTE_R | PTE_W);
 #endif
 
     // ramdisk

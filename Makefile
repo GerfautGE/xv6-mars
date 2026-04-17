@@ -41,6 +41,7 @@ OBJS = \
   $K/syscrg.o \
   $K/hasht.o \
   $K/watchdog.o \
+  $K/gmac.o \
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
 # perhaps in /opt/riscv/bin
